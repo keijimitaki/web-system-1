@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  textbook-web-ruby-rails-web:
+    container_name: 'textbook.web.ruby.rails.web'
+    build:
+      context: .
+      dockerfile: dockerfiles/nginx.dockerfile
+    ports:
+      - '1131:80'
+    volumes:
+      #- ./src:/var/www/html
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - tmp-data:/var/www/html/tmp/sockets
+      # - public-data:/var/www/html/public      
+      - ./src:/var/www/html      
+    depends_on:
+      - textbook-web-ruby-rails-ruby
+      - textbook-web-ruby-rails-mysql
+  textbook-web-ruby-rails-ruby:
+    container_name: 'textbook.web.ruby.rails.ruby'
+    build:
+      context: .
+      dockerfile: dockerfiles/ruby.dockerfile
+    volumes:
+      - tmp-data:/var/www/html/tmp/sockets
+      - ./src:/var/www/html      
+    command: bundle exec rails server -b 0.0.0.0
+
+  textbook-web-ruby-rails-mysql:
+    container_name: 'textbook.web.ruby.rails.ruby.mysql'
+    image: mysql:5.7
+    platform: linux/x86_64
+    env_file:
+      - ./db/env/mysql.env
+    volumes:
+      - ./db/data:/var/lib/mysql
+
+  textbook-web-ruby-rails-myadmin:
+    container_name: 'textbook.web.ruby.rails.ruby.myadmin'
+    depends_on:
+      - textbook-web-ruby-rails-mysql
+    image: phpmyadmin/phpmyadmin
+    platform: linux/x86_64
+    environment:
+      PMA_HOST: textbook-web-ruby-rails-mysql
+    restart: always
+    ports:
+      - "1132:80"
+
+volumes:
+  #public-data:
+  tmp-data:
+  
