@@ -6,19 +6,6 @@ class TopicsController < ApplicationController
     @topics = Topic.all
   end
 
-  # GET /topics/1 or /topics/1.json
-  def show
-  end
-
-  # GET /topics/new
-  def new
-    @topic = Topic.new
-  end
-
-  # GET /topics/1/edit
-  def edit
-  end
-
   # POST /topics or /topics.json
   def create
     @topic = Topic.new(topic_params)
@@ -26,10 +13,10 @@ class TopicsController < ApplicationController
     respond_to do |format|
       if @topic.save
         format.html { redirect_to topic_url(@topic), notice: "Topic was successfully created." }
-        format.json { render :show, status: :created, location: @topic }
+        #format.json { render :show, status: :created, location: @topic }
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @topic.errors, status: :unprocessable_entity }
+        #format.json { render json: @topic.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -37,12 +24,20 @@ class TopicsController < ApplicationController
   # PATCH/PUT /topics/1 or /topics/1.json
   def update
     respond_to do |format|
-      if @topic.update(topic_params)
+      
+      db_param = {
+        "id" => topic_params[:"id"], 
+        "name" => topic_params[:"name-selected"], 
+        "toc" => topic_params[:"toc-selected"], 
+        "memo" => topic_params[:"memo-selected"], 
+      }
+      
+      if @topic.update(db_param)
         format.html { redirect_to topic_url(@topic), notice: "Topic was successfully updated." }
-        format.json { render :show, status: :ok, location: @topic }
+      #  format.json { render :show, status: :ok, location: @topic }
       else
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @topic.errors, status: :unprocessable_entity }
+      #  format.json { render json: @topic.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -59,12 +54,18 @@ class TopicsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_topic
+    def set_topic      
       @topic = Topic.find(params[:id])
+      Rails.logger.debug "@topic"
+      Rails.logger.debug @topic.inspect
+
     end
 
     # Only allow a list of trusted parameters through.
     def topic_params
-      params.require(:topic).permit(:name, :toc, :memo)
+      Rails.logger.debug "params"
+      Rails.logger.debug params
+      #params.require(:topic).permit(:name, :toc, :memo)
+      params.permit(:"id", :"name-selected", :"toc-selected", :"memo-selected")
     end
 end

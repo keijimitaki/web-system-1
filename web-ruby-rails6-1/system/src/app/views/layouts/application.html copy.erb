@@ -76,9 +76,6 @@
               <form name="list-form" action="/" method="post">
                   @method('delete')
                   @csrf
-              # <input type="hidden" name="_method" value="patch" autocomplete="off">
-              <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
-
               </form>
 
           </div>
@@ -98,8 +95,6 @@
       <div class="detail-area col-4 m-4 p-4 d-flex flex-column shadow p-3 mb-5 bg-body rounded rounded-3 bg-light">
           <form name="detail-form" action="/" method="post">
               @csrf
-              # <input type="hidden" name="_method" value="patch" autocomplete="off">
-              <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
 
               <div class="row mb-3">
                   詳細
