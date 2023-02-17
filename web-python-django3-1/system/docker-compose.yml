@@ -1,21 +1,21 @@
 version: '3.8'
 
 services:
-  textbook-web-python-django-web:
-    container_name: 'textbook.web.python.django.web'
+  textbook-web-python-django3-web:
+    container_name: 'textbook.web.python.django3.web'
     build:
       context: .
       dockerfile: dockerfiles/nginx.dockerfile
     ports:
-      - '1121:80'
+      - '11213:80'
     volumes:
       - ./src:/var/www/html
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
-      textbook-web-python-django-python:
+      textbook-web-python-django3-python:
         condition: service_started
-  textbook-web-python-django-python:
-    container_name: 'textbook.web.python.django.python'
+  textbook-web-python-django3-python:
+    container_name: 'textbook.web.python.django3.python'
     build:
       context: .
       dockerfile: dockerfiles/python.dockerfile
@@ -23,11 +23,11 @@ services:
       - ./src:/var/www/html:delegated
     command: python3 /var/www/html/manage.py runserver 0.0.0.0:3000
     depends_on:
-      textbook-web-python-django-mysql:
+      textbook-web-python-django3-mysql:
         condition: service_started
 
-  textbook-web-python-django-mysql:
-    container_name: 'textbook.web.python.django.mysql'
+  textbook-web-python-django3-mysql:
+    container_name: 'textbook.web.python.django3.mysql'
     image: mysql:5.7
     restart: always
 #    platform: linux/x86_64
@@ -35,17 +35,18 @@ services:
       - ./db/env/mysql.env
     volumes:
       - ./db/data:/var/lib/mysql
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
-  textbook-web-python-django-myadmin:
-    container_name: 'textbook.web.python.django.myadmin'
+  textbook-web-python-django3-myadmin:
+    container_name: 'textbook.web.python.django3.myadmin'
     depends_on:
-      - textbook-web-python-django-mysql
+      - textbook-web-python-django3-mysql
     image: phpmyadmin/phpmyadmin
     environment:
-      PMA_HOST: textbook-web-python-django-mysql
+      PMA_HOST: textbook-web-python-django3-mysql
     restart: always
     ports:
-      - "1122:80"
+      - "11223:80"
 
 #networks:
 #  default:
