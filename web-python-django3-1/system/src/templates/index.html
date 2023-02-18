@@ -20,9 +20,6 @@
     </head>
     <body class="container bg-light">
 
-現在時刻は{{ time }}です。
-{{name}}さん
-
         <div class="contents my-5 d-flex flex-row">
             
             <div class="list-area col-8 m-4 p-4 d-flex flex-column shadow p-3 mb-5 bg-body rounded rounded-3 bg-light" style="height:70vh;">
@@ -43,11 +40,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                                <tr class="select-detail-tr" id="row-index-">
-                                    <td> $topic->id </td>
-                                    <td> $topic->name </td>
-                                    <td> $topic->created_at </td>
-                                    <td> $topic->updated_at </td>
+                            {% for topic in Topics %}
+                                <tr class="select-detail-tr" id="row-index-{{ topic.id }}">
+                                    <td>{{ topic.id }}</td>
+                                    <td>{{ topic.name }}</td>
+                                    <td>{{ topic.created_at }}</td>
+                                    <td>{{ topic.updated_at }}</td>
                                     <td class="px-0 mx-0">
                                         <div class="d-flex">
                                             <div class="me-3">
@@ -62,12 +60,12 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <input name="id" value=" $topic->id " type="hidden">
-                                    <input name="name" value=" $topic->name " type="hidden">
-                                    <input name="toc" value=" $topic->toc " type="hidden">
-                                    <input name="memo" value=" $topic->memo " type="hidden">
+                                    <input name="id" value="{{ topic.id }}" type="hidden">
+                                    <input name="name" value="{{ topic.name }}" type="hidden">
+                                    <input name="toc" value="{{ topic.toc }}" type="hidden">
+                                    <input name="memo" value="{{ topic.memo }}" type="hidden">
                                 </tr>
-
+                            {% endfor %}
                         </tbody>
                     </table>
                     <form name="list-form" action="/" method="post">
@@ -90,7 +88,7 @@
             
             <div class="detail-area col-4 m-4 p-4 d-flex flex-column shadow p-3 mb-5 bg-body rounded rounded-3 bg-light">
                 <form name="detail-form" action="/" method="post">
-                    @csrf
+                   {% csrf_token %}
 
                     <div class="row mb-3">
                         詳細
