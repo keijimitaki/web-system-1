@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  textbook-spa-react-laravel-web:
+    container_name: 'textbook.spa.react.laravel.web'
+    build:
+      context: .
+      dockerfile: dockerfiles/nginx.dockerfile
+    ports:
+      - '1211:80'
+#      - '1212:81'
+    volumes:
+#      - ./src/back:/var/www/html
+      - ./src/front:/var/www/html/front
+      - ./src/back:/var/www/html/api
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+#      - textbook-spa-react-laravel-front
+      - textbook-spa-react-laravel-back
+      - textbook-spa-react-laravel-mysql
+#  textbook-spa-react-laravel-front:
+#    container_name: 'textbook.spa.react.laravel.front'
+#    build:
+#      context: .
+#      dockerfile: dockerfiles/frontend.react.dockerfile
+#    volumes:
+#      - ./src/front:/var/www/html:delegated
+
+  textbook-spa-react-laravel-back:
+    container_name: 'textbook.spa.react.laravel.back'
+    build:
+      context: .
+      dockerfile: dockerfiles/backend.php.dockerfile
+    volumes:
+      # - ./src/back:/var/www/html:delegated
+      - ./src/back:/var/www/html/api:delegated
+    #command: php artisan serve --port 3000
+
+  textbook-spa-react-laravel-mysql:
+    container_name: 'textbook.spa.react.laravel.mysql'
+    image: mysql:5.7
+    env_file:
+      - ./db/env/mysql.env
+    volumes:
+      - ./db/data:/var/lib/mysql
+
+  textbook-spa-react-laravel-myadmin:
+    container_name: 'textbook.spa.react.laravel.myadmin'
+    depends_on:
+      - textbook-spa-react-laravel-mysql
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: textbook-spa-react-laravel-mysql
+    restart: always
+    ports:
+      - "122:80"
+
+#networks:
+#  default:
+#    external:
+#      name: rd-shared

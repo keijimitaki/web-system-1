@@ -1,0 +1,6 @@
+
+
+Nginx
+ 80 React
+ 80/api PHP-FPM:9000 backend
+
