@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  textbook-web-nodejs-express4-web:
+    container_name: 'textbook.web.nodejs.express4.web'
+    build:
+      context: .
+      dockerfile: dockerfiles/nginx.dockerfile
+    ports:
+      - '1141:80'
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      textbook-web-nodejs-express4-nodejs:
+        condition: service_started
+  textbook-web-nodejs-express4-nodejs:
+    container_name: 'textbook.web.nodejs.express4.nodejs'
+    build:
+      context: .
+      dockerfile: dockerfiles/nodejs.dockerfile
+    volumes:
+      - ./src:/var/www/html:delegated
+    command: node app.js
+    depends_on:
+      textbook-web-nodejs-express4-mysql:
+        condition: service_started
+
+  textbook-web-nodejs-express4-mysql:
+    container_name: 'textbook.web.nodejs.express4.mysql'
+    image: mysql:5.7
+    restart: always
+#    platform: linux/x86_64
+    env_file:
+      - ./db/env/mysql.env
+    volumes:
+      - ./db/data:/var/lib/mysql
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  textbook-web-nodejs-express4-myadmin:
+    container_name: 'textbook.web.nodejs.express4.myadmin'
+    depends_on:
+      - textbook-web-nodejs-express4-mysql
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: textbook-web-nodejs-express4-mysql
+    restart: always
+    ports:
+      - "1142:80"
+
+#networks:
+#  default:
+#    external:
+#      name: rd-shared
