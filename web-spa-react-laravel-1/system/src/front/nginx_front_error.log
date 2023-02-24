@@ -16,3 +16,4 @@
 2023/02/20 06:16:00 [error] 22#22: *2 open() "/var/www/html/front/index.php" failed (2: No such file or directory), client: 172.20.0.1, server: localhost, request: "GET /index.php HTTP/1.1", host: "localhost:1211"
 2023/02/20 06:51:49 [error] 24#24: *4 open() "/var/www/html/front/index.php" failed (2: No such file or directory), client: 172.24.0.1, server: localhost, request: "GET /api/index.html HTTP/1.1", host: "localhost:1211"
 2023/02/20 06:51:55 [error] 24#24: *4 open() "/var/www/html/front/index.php" failed (2: No such file or directory), client: 172.24.0.1, server: localhost, request: "GET /api/index.html HTTP/1.1", host: "localhost:1211"
+2023/02/24 13:48:10 [error] 21#21: *1 open() "/var/www/html/front/favicon.ico" failed (2: No such file or directory), client: 172.23.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost:1211", referrer: "http://localhost:1211/"
